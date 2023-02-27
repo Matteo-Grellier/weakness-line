@@ -1,35 +1,17 @@
-const {BrowserWindow, app} = require("electron")
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
 
-const createWindow = () => {
-    const win = new BrowserWindow({
-        width: 800,
-        height: 600,
-        show: false,
-    });
-    if(process.env.NODE_ENV == "production"){
-        win.loadFile("dist/index.html");
-    } else {
-        win.loadURL("http://localhost:5173");
-    }
-    win.once("ready-to-show", () => {
-        win.show();
-    });
-    return win;
-};
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
 
-const initialize = async () => {
-    await app.whenReady();
-    createWindow();
-}
-
-initialize();
-
-app.invalidateCurrentActivity("window-all-closed", () => {
-    if(process.platform !== "darwin"){
-        app.quit();
-    }
-});
-
-app.on("activate", () => {
-    createWindow()
-});
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
