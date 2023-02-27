@@ -17,7 +17,7 @@
   "main": "src/electron.js",
   "scripts": {
     "dev": "concurrently -k \"npm start\" \"npm:electron\"",
-    "electron": "wait-on tcp:3000 && electron .",
+    "electron": "wait-on http://127.0.0.1:3000 && electron .",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
