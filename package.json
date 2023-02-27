@@ -1,0 +1,25 @@
+{
+  "name": "weaknessline",
+  "version": "0.1.0",
+  "description": "WeaknessLine > PowerPoint",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Matteo-Grellier/DevDesktopProject.git"
+  },
+  "keywords": [
+    "yes"
+  ],
+  "author": "Matteo-Grellier",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Matteo-Grellier/DevDesktopProject/issues"
+  },
+  "homepage": "https://github.com/Matteo-Grellier/DevDesktopProject#readme",
+  "devDependencies": {
+    "electron": "^23.1.1"
+  }
+}
