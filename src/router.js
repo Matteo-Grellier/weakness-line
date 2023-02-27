@@ -1,17 +1,17 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Page from "./pages/Page";
 
 export default function Router() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
-        <Route path="/" element={<Navbar />}>
-          <Route index element={<Home />} />
+        <Route path="/" exact element={<Navbar />}>
+          <Route index element={<Home />}/>
           <Route path="/page" element={<Page />} />
         </Route>
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
