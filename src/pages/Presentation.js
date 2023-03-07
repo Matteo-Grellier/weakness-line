@@ -1,8 +1,17 @@
 import './Presentation.css'
+// const { dialog } = require('electron')
+
+const OpenFile = async () => {
+  window.api.getFileContent((content) => {
+    // textarea.value = content;
+    console.log(content);
+  });
+}
 
 export default function Presentation() {
   return(
     <div className="page">
+      <button onClick={OpenFile}>yesman</button>
       <div className="diapo">
         <h1>Pressentation zone</h1>
         <p>Pressentation zone</p>
@@ -14,7 +23,7 @@ export default function Presentation() {
         <button className='arrow'>{">"}</button>
       </div>
       <div className="console">
-        <textarea>blaa alalzd jagd gazgd gaz</textarea>
+        <textarea value={"blaa alalzd jagd gazgd gaz"}/>
       </div>
     </div>
   )
