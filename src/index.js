@@ -4,7 +4,7 @@ import './index.css';
 import { HashRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
-import Page from "./pages/Page";
+import Presentation from "./pages/Presentation";
 import CreatePres from "./pages/CreatePresentation";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -14,7 +14,7 @@ root.render(
       <Routes>
         <Route path="/" exact element={<Navbar />}>
           <Route index element={<Home />}/>
-          <Route path="/page" element={<Page />} />
+          <Route path="/presentation" element={<Presentation />} />
           <Route path="/createPresentation" element={<CreatePres />} />
           <Route path="/openPresentation" element={<p>open pressentation</p>} />
         </Route>
