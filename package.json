@@ -1,48 +1,75 @@
 {
-  "name": "weakness-line",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
-    "concurrently": "^7.6.0",
-    "electron": "^23.1.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1",
-    "wait-on": "^7.0.1",
-    "web-vitals": "^2.1.4"
-  },
-  "main": "src/electron.js",
-  "scripts": {
-    "dev": "concurrently -k \"npm start\" \"npm:electron\"",
-    "electron": "wait-on http://127.0.0.1:3000 && electron .",
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "devDependencies": {
-    "react-router-dom": "^6.8.1",
-    "tailwindcss": "^3.2.7"
-  }
+    "name": "weakness-line",
+    "version": "0.1.0",
+    "private": true,
+    "author": {
+        "name": "Mattéo Grellier",
+        "email": "matteogrellier@gmail.com"
+    },
+    "build": {
+        "windows": {},
+        "linux": {
+            "target": "pacman"
+        },
+        "fileAssociations": [
+            {
+                "ext": "ext1",
+                "name": "ext1 File",
+                "role": "Editor"
+            },
+            {
+                "ext": "ext2",
+                "name": "ext2File",
+                "role": "Editor"
+            }
+        ],
+        "nsis": {
+            "perMachine": true
+        }
+    },
+    "dependencies": {
+        "@testing-library/jest-dom": "^5.16.5",
+        "@testing-library/react": "^13.4.0",
+        "@testing-library/user-event": "^13.5.0",
+        "concurrently": "^7.6.0",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "react-scripts": "5.0.1",
+        "wait-on": "^7.0.1",
+        "web-vitals": "^2.1.4"
+    },
+    "main": "src/electron.js",
+    "scripts": {
+        "dev": "concurrently -k \"npm start\" \"npm:electron\"",
+        "electron": "wait-on http://127.0.0.1:3000 && electron .",
+        "start": "react-scripts start",
+        "build": "react-scripts build",
+        "pack": "electron-builder --dir",
+        "dist": "electron-builder",
+        "test": "react-scripts test",
+        "eject": "react-scripts eject"
+    },
+    "eslintConfig": {
+        "extends": [
+            "react-app",
+            "react-app/jest"
+        ]
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
+    "devDependencies": {
+        "electron-builder": "^23.6.0",
+        "electron": "^23.1.1",
+        "react-router-dom": "^6.8.1"
+    }
 }
