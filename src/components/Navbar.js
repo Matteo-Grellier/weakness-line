@@ -16,8 +16,8 @@ export default function Navbar() {
                 Accueil
               </Link>
 
-              <Link to="/createpresentation" className="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium">
-                Créer une présentation
+              <Link to="/presentation" className="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium">
+                presentation
               </Link>
             </div>
           </div>

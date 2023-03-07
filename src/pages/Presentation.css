@@ -1,0 +1,41 @@
+.console {
+    background-color: #464646;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 100px;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+}
+
+textarea {
+    background-color: #464646;
+    color: white;
+    resize: none;
+    width: 95%;
+    scroll-behavior: auto;
+}
+
+.diapo{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.arrows {
+    width: 150px;
+    position: absolute;
+    right: 0;
+    bottom: 100px;
+}
+
+.arrow {
+    font-size: 60px;
+    font-weight: bold;
+    margin-left: 10px;
+    margin-right: 10px;
+    color: #92E6D2;
+}
