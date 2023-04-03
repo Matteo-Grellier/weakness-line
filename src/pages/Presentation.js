@@ -8,30 +8,51 @@ const parse = require('html-react-parser');
 // var result = md.render('# markdown-it rulezz! \n --- \n bob ! \n ```cs  yay ```');
 
 export default function Presentation() {
-  const [color, setColor] = useState('empty');
+  const [pageContent, setPageContent] = useState(['empty']);
+  const [diapo, setDiapo] = useState(0);
 
-  const OpenFile = async () => {
-    window.api.getFileContent((content) => {
+  const OpenFile = async  () => {
+    await window.api.getFileContent((content) => {
       // textarea.value = content;
-      setColor(content);
-      console.log(md.render(content));
+      setPageContent(content.split("---"));
+      setDiapo(0);
     });
   }
 
+  const NextDiapo = () => {
+    console.log(diapo+1);
+    console.log(pageContent.length);
+    if(diapo+1 <= pageContent.length - 1) {
+      setDiapo(diapo+1);
+    } else {
+      console.log("nop");
+    }
+  }
+
+  const PreviousDiapo = () => {
+    console.log(diapo-1);
+    if(diapo-1 >= 0) {
+      setDiapo(diapo-1);
+    } else {
+      console.log("nop");
+    }
+  }
+
+
   return(
     <div className="page">
-      <button onClick={OpenFile}>yesman</button>
+      <button className="yesman" onClick={OpenFile}>yesman</button>
       <div className="diapo">
         {/* <h1>Pressentation zone</h1>
         <p>Pressentation zone</p>
         <p>Pressentation zone</p> */}
-        {parse(md.render(color))}
+        {parse(md.render(pageContent[diapo]))}
 
 
       </div>
       <div className="arrows">
-        <button className='arrow'>{"<"}</button>
-        <button className='arrow'>{">"}</button>
+        <button className='arrow' onClick={PreviousDiapo}>{"<"}</button>
+        <button className='arrow' onClick={NextDiapo}>{">"}</button>
       </div>
       <div className="console">
         <textarea /*value={"blaa alalzd jagd gazgd gaz"*//>
