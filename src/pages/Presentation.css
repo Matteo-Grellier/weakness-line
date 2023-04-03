@@ -25,6 +25,15 @@ textarea {
     align-items: center;
 }
 
+.goback {
+    position: absolute;
+    right: 0;
+    top: 70px;
+    margin-right: 30px;
+    font-size: 30px;
+    font-weight: bold;
+}
+
 .arrows {
     width: 150px;
     position: absolute;

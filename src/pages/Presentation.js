@@ -1,6 +1,8 @@
 import './Presentation.css'
 import { useState } from "react";
 import ReactDOM from "react-dom/client";
+import { useNavigate } from "react-router-dom";
+
 // const { dialog } = require('electron')
 var md = require('markdown-it')();
 const parse = require('html-react-parser');
@@ -8,6 +10,13 @@ const parse = require('html-react-parser');
 // var result = md.render('# markdown-it rulezz! \n --- \n bob ! \n ```cs  yay ```');
 
 export default function Presentation() {
+
+  let navigate = useNavigate(); 
+  const toHome = () =>{ 
+    let path = `/`; 
+    navigate(path);
+  }
+
   const [pageContent, setPageContent] = useState(['empty']);
   const [diapo, setDiapo] = useState(0);
 
@@ -47,9 +56,8 @@ export default function Presentation() {
         <p>Pressentation zone</p>
         <p>Pressentation zone</p> */}
         {parse(md.render(pageContent[diapo]))}
-
-
       </div>
+      <button onClick={toHome} className="goback"> x </button>
       <div className="arrows">
         <button className='arrow' onClick={PreviousDiapo}>{"<"}</button>
         <button className='arrow' onClick={NextDiapo}>{">"}</button>
