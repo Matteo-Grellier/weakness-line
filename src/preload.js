@@ -1,5 +1,6 @@
 const {contextBridge,ipcRenderer} = require("electron");
 
+
 contextBridge.exposeInMainWorld("api",{
     // setupFileListHandler(callback){
     //     ipcRenderer.on("file-list",(e,data) => {
@@ -25,4 +26,4 @@ contextBridge.exposeInMainWorld("api",{
     //         callback(data.file,data.content);
     //     });
     // }
-});
+})
