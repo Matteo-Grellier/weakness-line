@@ -16,19 +16,27 @@ function createWindow () {
 
   win.webContents.ipc.on("get-file-content", async () => {
     const openDialogResult = await dialog.showOpenDialog(BrowserWindow.getFocusedWindow(), {
-      title : "Open folder ...",
+      title : "Open file ...",
       buttonLabel : "Open",
       properties : [
         "openFile",
       ],
       filters : [
-        { name: 'md', extensions: ['md'] },
+        { name: 'codeprez', extensions: ['codeprez'] },
       ],
     });
 
-    const content = await readFile(openDialogResult.filePaths[0] ,{encoding : "utf-8"});
+    const decompress = require('decompress');
+    const files = await decompress(openDialogResult.filePaths[0], "../presentation");
+    // const content = await readFile(files[2].data.toString() ,{encoding : "utf-8"});
 
-    win.webContents.send("file-content", content);
+    files.forEach( (item) => {
+      if(item.path == "presentation.md" ) {
+        const content = files[6].data.toString();
+        win.webContents.send("file-content", content);
+      }
+    })
+
   });
 
   win.loadURL('http://localhost:3000/%27')
