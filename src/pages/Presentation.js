@@ -1,5 +1,5 @@
 import './Presentation.css'
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ReactDOM from "react-dom/client";
 import { useNavigate } from "react-router-dom";
 
@@ -19,6 +19,10 @@ export default function Presentation() {
 
   const [pageContent, setPageContent] = useState(['empty']);
   const [diapo, setDiapo] = useState(0);
+
+  useEffect(() => {
+    OpenFile();
+  }, []);
 
   const OpenFile = async  () => {
     await window.api.getFileContent((content) => {

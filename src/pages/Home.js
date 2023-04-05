@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom";
 
 export default function Home() {
 
-  let navigate = useNavigate(); 
-  const toPresentation = () =>{ 
+  const navigate = useNavigate(); 
+  const toPresentation = async () =>{ 
     let path = `/presentation`; 
     navigate(path);
   }
