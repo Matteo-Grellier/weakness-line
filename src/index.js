@@ -12,12 +12,12 @@ root.render(
   <>
     <HashRouter>
       <Routes>
-        <Route path="/" exact element={<Navbar />}>
+        {/* <Route path="/" exact element={<Navbar />}> */}
           <Route index element={<Home />}/>
           <Route path="/presentation" element={<Presentation />} />
           <Route path="/createPresentation" element={<CreatePres />} />
           <Route path="/openPresentation" element={<p>open pressentation</p>} />
-        </Route>
+        {/* </Route> */}
       </Routes>
     </HashRouter>
   </>
