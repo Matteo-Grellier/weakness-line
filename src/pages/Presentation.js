@@ -2,12 +2,9 @@ import './Presentation.css'
 import { useState, useEffect } from "react";
 import ReactDOM from "react-dom/client";
 import { useNavigate } from "react-router-dom";
-
-// const { dialog } = require('electron')
-var md = require('markdown-it')();
+const md = require('markdown-it')();
 const parse = require('html-react-parser');
 
-// var result = md.render('# markdown-it rulezz! \n --- \n bob ! \n ```cs  yay ```');
 
 export default function Presentation() {
 
@@ -25,9 +22,14 @@ export default function Presentation() {
   }, []);
 
   const OpenFile = async  () => {
-    await window.api.getFileContent((content) => {
-      // textarea.value = content;
-      setPageContent(content.split("---"));
+    await window.api.getFileContent((array) => {
+      const content = array[0];
+      const tempFilePath = array[1];
+      console.log(tempFilePath);
+      
+      var fixedPathContent = content.replaceAll('./assets/image.jpg', 'C:/Users/lewis/AppData/Local/Temp/weaknessLine/assets/image.jpg'); //'./assets/'  tempFilePath + '/assets/'
+      console.log("fixedPathContent: ", fixedPathContent)
+      setPageContent(fixedPathContent.split("---"));
       setDiapo(0);
     });
   }
@@ -56,10 +58,8 @@ export default function Presentation() {
     <div className="page">
       <button className="yesman" onClick={OpenFile}>yesman</button>
       <div className="diapo">
-        {/* <h1>Pressentation zone</h1>
-        <p>Pressentation zone</p>
-        <p>Pressentation zone</p> */}
         {parse(md.render(pageContent[diapo]))}
+        <img src='./image.jpg'></img>
       </div>
       <button onClick={toHome} className="goback"> x </button>
       <div className="arrows">

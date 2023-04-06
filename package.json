@@ -6,7 +6,7 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
-    "concurrently": "^7.6.0",
+    "cross-env": "^7.0.3",
     "decompress": "^4.2.1",
     "electron": "^23.1.1",
     "html-react-parser": "^3.0.12",
@@ -14,12 +14,11 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
-    "wait-on": "^7.0.1",
     "web-vitals": "^2.1.4"
   },
   "main": "src/electron.js",
   "scripts": {
-    "dev": "concurrently -k \"npm start\" \"npm:electron\"",
+    "dev": "concurrently -k \"cross-env BROWSER=none npm start\" \"npm:electron\"",
     "electron": "wait-on http://127.0.0.1:3000 && electron .",
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -45,7 +44,9 @@
     ]
   },
   "devDependencies": {
+    "concurrently": "^8.0.1",
     "react-router-dom": "^6.8.1",
-    "tailwindcss": "^3.2.7"
+    "tailwindcss": "^3.2.7",
+    "wait-on": "^7.0.1"
   }
 }
