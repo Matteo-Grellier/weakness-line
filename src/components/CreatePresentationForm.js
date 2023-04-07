@@ -1,40 +1,41 @@
 import React, { useState } from 'react';
 
-const CreatePresentationForm = () => {
-  const [markdownFile, setMarkdownFile] = useState(null);
-  const [cssFile, setCssFile] = useState(null);
-  const [assetsFolder, setAssetsFolder] = useState(null);
+export default function CreatePresentation () {
+    const [markdownFilePath, setmarkdownFilePath] = useState(null);
+    const [cssFilePath, setCssFilePath] = useState(null);
+    const [assetsFolderPath, setAssetsFolderPath] = useState(null);
+    const [submitClicked, setSubmitClicked] = useState(false);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        setSubmitClicked(true);
+        window.api.createPresentation(markdownFilePath, cssFilePath);
+    }
 
-    const data = {
-        markdownFile,
-        cssFile,
-        assetsFolder,
-    };
-    window.api.createPresentation(data);
+    const handleAssetsFolderClick = () => {
+        window.api.openAssetsFolder().then((assetsFolderPath) => {
+            setAssetsFolderPath(assetsFolderPath);
+        });
 
-  }
-
+    }
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} >
       <div>
         <label htmlFor="markdown-file">Fichier Markdown :</label>
-        <input type="file" id="markdown-file" onChange={(event) => setMarkdownFile(event.target.files[0])} />
+        <input accept='.md' type="file" id="markdown-file" onChange={(event) => setmarkdownFilePath(event.target.files[0].path)} />
       </div>
       <div>
         <label htmlFor="css-file">Fichier CSS :</label>
-        <input type="file" id="css-file" onChange={(event) => setCssFile(event.target.files[0])} />
+        <input accept='.css' type="file" id="css-file" onChange={(event) => setCssFilePath(event.target.files[0].path)} />
       </div>
       <div>
         <label htmlFor="assets-folder">Dossier des assets :</label>
-        <input type="file" id="assets-folder" webkitdirectory="" onChange={(event) => setAssetsFolder(event.target.files[0])} />
+        <button type="button" id="assets-folder" onClick={handleAssetsFolderClick}>Choisir un dossier</button>
+        <p>{assetsFolderPath}</p>
+
       </div>
-      <button type="submit">Créer la présentation</button>
+      <button id="submit" type="submit">Créer la présentation</button>
+      {submitClicked && <p>La présentation a été créée avec succès !</p>}
     </form>
   );
 }
-
-export default CreatePresentationForm
-

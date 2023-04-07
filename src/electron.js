@@ -1,88 +1,90 @@
 const { app, BrowserWindow, dialog, ipcMain } = require('electron')
-const {readdir, readFile, writeFile} = require("fs/promises");
+const { readdir } = require("fs/promises");
 const path = require('path')
 const archiver = require('archiver');
 const fs = require('fs');
 
-function createWindow () {
-  const win = new BrowserWindow({
-    width: 800,
-    height: 600,
-    icon: "./src/logo.ico", 
-    webPreferences: {
-      nodeIntegration: true,
-      enableRemoteModule: true,
-      preload: path.join(__dirname, 'preload.js'),
-    }
-  })
+let assetsFolderPath = null;
 
-  win.webContents.ipc.on("get-file-content", async () => {
-    const openDialogResult = await dialog.showOpenDialog(BrowserWindow.getFocusedWindow(), {
-      title : "Open file ...",
-      buttonLabel : "Open",
-      properties : [
-        "openFile",
-      ],
-      filters : [
-        { name: 'codeprez', extensions: ['codeprez'] },
-      ],
+function createWindow() {
+    const win = new BrowserWindow({
+        width: 800,
+        height: 600,
+        icon: "./src/logo.ico",
+        webPreferences: {
+            nodeIntegration: true,
+            enableRemoteModule: true,
+            preload: path.join(__dirname, 'preload.js'),
+        }
+    })
+
+    ipcMain.handle("open-assets-folder", async () => {
+        const openDialogResult = await dialog.showOpenDialog(BrowserWindow.getFocusedWindow(), {
+            title: "Open folder ...",
+            buttonLabel: "Open",
+            properties: [
+                "openDirectory",
+            ],
+        });
+
+        assetsFolderPath = openDialogResult.filePaths[0];
+        return assetsFolderPath;
     });
 
-    const decompress = require('decompress');
-    const files = await decompress(openDialogResult.filePaths[0], "../presentation");
-    // const content = await readFile(files[2].data.toString() ,{encoding : "utf-8"});
 
-    files.forEach( (item) => {
-      if(item.path == "presentation.md" ) {
-        const content = files[6].data.toString();
-        win.webContents.send("file-content", content);
-      }
-    })
-    ipcMain.on('create-presentation', (event, data) => {
-        // Create a new archive
-        const outputFilePath = path.join(__dirname, 'presentation.zip');
-        const output = fs.createWriteStream(outputFilePath);
-        const archive = archiver('zip', { zlib: { level: 9 } });
-      
-        // Add the Markdown file to the archive
-        archive.append(fs.createReadStream(data.markdownFile.path), { name: 'presentation.md' });
-      
-        // Add the CSS file to the archive
-        archive.append(fs.createReadStream(data.cssFile.path), { name: 'style.css' });
-      
-        // Add the assets folder to the archive
-        archive.directory(data.assetsFolder.path, 'assets');
-      
-        // Finalize the archive
-        archive.pipe(output);
-        archive.finalize();
-      
-        // When the archive is finished, send a message back to the renderer process
-        output.on('close', () => {
-          event.sender.send('presentation-created', outputFilePath);
+    // Récupérer les fichiers et dossiers et les archiver dans un zip que l'utilisateur pourra sauvegarder sur son ordinateur en renommant le .zip en .codeprez
+    ipcMain.on("create-presentation", async (event, { markdownFilePath, cssFilePath }) => {
+        const openDialogResult = await dialog.showSaveDialog(BrowserWindow.getFocusedWindow(), {
+            title: "Save presentation ...",
+            buttonLabel: "Save",
+            filters: [
+                { name: 'codeprez', extensions: ['codeprez'] },
+            ],
         });
-      });
-      
+        
 
-    const content = await readFile(openDialogResult.filePaths[0] ,{encoding : "utf-8"});
+        const archive = archiver("zip", {
+            zlib: { level: 9 } // Sets the compression level.
+        });
 
-  });
+        const output = fs.createWriteStream(openDialogResult.filePath);
+        archive.pipe(output);
 
-  win.loadURL('http://localhost:3000/%27')
+        archive.file(markdownFilePath, { name: path.basename(markdownFilePath) });
+        archive.file(cssFilePath, { name: path.basename(cssFilePath) });
+
+        const files = await readdir(assetsFolderPath);
+        for (const file of files) {
+            const filePath = path.join(assetsFolderPath, file);
+            archive.file(filePath, { name: `assets/${file}` });
+        }
+        
+
+        archive.finalize();
+
+        // rename the file to namefile.codeprez
+        fs.rename(openDialogResult.filePath, openDialogResult.filePath + ".codeprez", (err) => {
+            if (err) {
+                console.log(err);
+            }
+        }
+        );
+    });
+    win.loadURL('http://localhost:3000/%27')
 }
 
 app.whenReady().then(() => {
-  createWindow()
+    createWindow()
 
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow()
-    }
-  })
+    app.on('activate', () => {
+        if (BrowserWindow.getAllWindows().length === 0) {
+            createWindow()
+        }
+    })
 })
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
+    if (process.platform !== 'darwin') {
+        app.quit()
+    }
 })
