@@ -22,14 +22,31 @@ export default function Presentation() {
   }, []);
 
   const OpenFile = async  () => {
-    await window.api.getFileContent((array) => {
+    await window.api.getFileContent( (array) => {
       const content = array[0];
       const tempFilePath = array[1];
-      console.log(tempFilePath);
+      // console.log("tempFilePath = " + tempFilePath);
       
-      var fixedPathContent = content.replaceAll('./assets/image.jpg', 'C:/Users/lewis/AppData/Local/Temp/weaknessLine/assets/image.jpg'); //'./assets/'  tempFilePath + '/assets/'
-      console.log("fixedPathContent: ", fixedPathContent)
+      var fixedPathContent = content.replaceAll('./assets/', 'atom://' + tempFilePath + '/assets/');  
+      console.log("fixedPathContent: ", fixedPathContent);
       setPageContent(fixedPathContent.split("---"));
+      fixedPathContent.split("---").forEach((item, index) => {
+        if(item.includes("[Code]")) {
+          item.split("\n").forEach((item1, index1) => {
+            const myRe = new RegExp(/(?<=\()(.*?)(?=\))/, 'gmi');
+            const path = item1.match(myRe);
+            // const path = item1.match();
+            if(path != null) {
+              const fileName = path[0].replace('atom://' + tempFilePath + '/assets/', "").split(".")[1].split("#"); 
+              console.log(fileName[0], fileName[1]);
+              window.api.getCodeFileContent( (data) => {
+                
+              })
+            }
+          })
+        }
+      });
+
       setDiapo(0);
     });
   }
@@ -56,10 +73,9 @@ export default function Presentation() {
 
   return(
     <div className="page">
-      <button className="yesman" onClick={OpenFile}>yesman</button>
+      {/* <button className="yesman" onClick={OpenFile}>yesman</button> */}
       <div className="diapo">
         {parse(md.render(pageContent[diapo]))}
-        <img src='./image.jpg'></img>
       </div>
       <button onClick={toHome} className="goback"> x </button>
       <div className="arrows">
@@ -67,7 +83,7 @@ export default function Presentation() {
         <button className='arrow' onClick={NextDiapo}>{">"}</button>
       </div>
       <div className="console">
-        <textarea /*value={"blaa alalzd jagd gazgd gaz"*//>
+        <textarea /*value={"blaa alalzd jagd gazgd gaz"}*//>
       </div>
     </div>
   )

@@ -1,4 +1,4 @@
-const { app, BrowserWindow, dialog } = require('electron')
+const { app, BrowserWindow, dialog, protocol } = require('electron')
 const {readdir, readFile, writeFile} = require("fs/promises");
 const path = require('path')
 const fs = require('fs'); 
@@ -15,7 +15,7 @@ function createWindow () {
     }
   })
 
-  const tempFilePath = path.join(app.getPath('temp'), "/weaknessLine");
+  const tempFilePath = path.join(app.getPath('temp'), "/weaknessLine").replaceAll('\\', '/');
 
   win.webContents.ipc.on("get-file-content", async () => {
     const openDialogResult = await dialog.showOpenDialog(BrowserWindow.getFocusedWindow(), {
@@ -31,8 +31,7 @@ function createWindow () {
 
     const decompress = require('decompress');
     const files = await decompress(openDialogResult.filePaths[0], tempFilePath);
-
-    console.log("HERE", tempFilePath);
+    // console.log("HERE", tempFilePath);
 
     files.forEach( (item) => {
       if(item.path == "presentation.md" ) {
@@ -41,6 +40,16 @@ function createWindow () {
       }
     })
 
+  });
+
+  win.webContents.ipc.on("get-code-file-content", async (filename) => {
+    await fs.readFile(tempFilePath + "/assets/" + filename , 'utf8', (err, data) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      win.webContents.send("code-file-content", data);
+    });
   });
 
   win.on('close', function() {
@@ -52,6 +61,8 @@ function createWindow () {
         }
         console.log("sucessfully cleared temp file");
       });
+    } else {
+      console.log('could not clear temp file, ', tempFilePath,  ' does not exist');
     }
   });
 
@@ -66,6 +77,12 @@ app.whenReady().then(() => {
       createWindow()
     }
   })
+
+  protocol.registerFileProtocol('atom', (request, callback) => {
+    console.log(request.url);
+    const url = request.url.substring(7);
+    callback({ path: url });
+  });
 })
 
 app.on('window-all-closed', () => {

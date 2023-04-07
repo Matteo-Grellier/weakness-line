@@ -12,6 +12,12 @@ contextBridge.exposeInMainWorld("api",{
             callback(data);
         });
     },
+    getCodeFileContent : (filename, callback) => {
+        ipcRenderer.send("get-code-file-content", filename);
+        ipcRenderer.once("code-file-content", (e,data) => {
+            callback(data);
+        });
+    },
     // updateFileContent : (folder,file,content) => {
     //     ipcRenderer.send("update-file-content",{folder,file,content});
     // },
