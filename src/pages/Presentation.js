@@ -17,20 +17,22 @@ export default function Presentation() {
   const [pageContent, setPageContent] = useState(['empty']);
   const [diapo, setDiapo] = useState(0);
 
-  useEffect(() => {
+  useEffect(async () => {
     OpenFile();
+    console.log("HERE", getCodeFileCont("index.js"));
   }, []);
 
   const OpenFile = async  () => {
-    await window.api.getFileContent( (array) => {
+    await window.api.getFileContent( async (array) => {
       const content = array[0];
       const tempFilePath = array[1];
       // console.log("tempFilePath = " + tempFilePath);
       
-      var fixedPathContent = content.replaceAll('./assets/', 'atom://' + tempFilePath + '/assets/');  
+      var fixedPathContent = content.replaceAll('./assets/', 'atom://' + tempFilePath + '/assets/'); 
+      // fixedPathContent =  fixedPathContent.replaceAll([code])
       console.log("fixedPathContent: ", fixedPathContent);
       setPageContent(fixedPathContent.split("---"));
-      fixedPathContent.split("---").forEach((item, index) => {
+      fixedPathContent.split("---").forEach( async (item, index) => {
         if(item.includes("[Code]")) {
           item.split("\n").forEach((item1, index1) => {
             const myRe = new RegExp(/(?<=\()(.*?)(?=\))/, 'gmi');
@@ -39,16 +41,19 @@ export default function Presentation() {
             if(path != null) {
               const fileName = path[0].replace('atom://' + tempFilePath + '/assets/', "").split(".")[1].split("#"); 
               console.log(fileName[0], fileName[1]);
-              window.api.getCodeFileContent( (data) => {
-                
-              })
+              // console.log(getCodeFileCont(fileName));
             }
           })
         }
       });
-
       setDiapo(0);
     });
+  }
+
+  const getCodeFileCont = async (fileName) => {
+    await window.api.getCodeFileContent( fileName, (data) => {
+      return data;
+    })
   }
 
   const NextDiapo = () => {

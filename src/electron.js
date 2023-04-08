@@ -43,7 +43,7 @@ function createWindow () {
   });
 
   win.webContents.ipc.on("get-code-file-content", async (filename) => {
-    await fs.readFile(tempFilePath + "/assets/" + filename , 'utf8', (err, data) => {
+    fs.readFile(tempFilePath + "/assets/" + filename , 'utf8', (err, data) => {
       if (err) {
         console.error(err);
         return;
