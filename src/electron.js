@@ -17,6 +17,12 @@ function createWindow() {
             preload: path.join(__dirname, 'preload.js'),
         }
     })
+    if (app.isPackaged) {
+        win.loadFile(path.join(__dirname, 'index.html'))
+    } else {
+        win.loadURL('http://localhost:3000')
+    }
+    
 
     ipcMain.handle("open-assets-folder", async () => {
         const openDialogResult = await dialog.showOpenDialog(BrowserWindow.getFocusedWindow(), {
@@ -33,7 +39,7 @@ function createWindow() {
 
 
     // Récupérer les fichiers et dossiers et les archiver dans un zip que l'utilisateur pourra sauvegarder sur son ordinateur en renommant le .zip en .codeprez
-    ipcMain.on("create-presentation", async (event, { markdownFilePath, cssFilePath }) => {
+    ipcMain.on("create-presentation", async (event, { markdownFilePath, cssFilePath, env, title, author, duration }) => {
         const openDialogResult = await dialog.showSaveDialog(BrowserWindow.getFocusedWindow(), {
             title: "Save presentation ...",
             buttonLabel: "Save",
@@ -53,16 +59,20 @@ function createWindow() {
         archive.file(markdownFilePath, { name: path.basename(markdownFilePath) });
         archive.file(cssFilePath, { name: path.basename(cssFilePath) });
 
+        // env is an array of path, create a env folder and put all the files in it
+        for (const envFilePath of env) {
+            archive.file(envFilePath, { name: `env/${path.basename(envFilePath)}` });
+        }
+
         const files = await readdir(assetsFolderPath);
         for (const file of files) {
             const filePath = path.join(assetsFolderPath, file);
             archive.file(filePath, { name: `assets/${file}` });
         }
-        
 
+        archive.append(JSON.stringify({ title, author, duration }), { name: "config.json" });
         archive.finalize();
 
-        // rename the file to namefile.codeprez
         fs.rename(openDialogResult.filePath, openDialogResult.filePath + ".codeprez", (err) => {
             if (err) {
                 console.log(err);
