@@ -40,13 +40,19 @@ function createWindow () {
 
     var mdFileContent = null;
     var cssFileContent = null;
+    var JsonConfigContent = null;
     files.forEach( (item) => {
-      if(item.path == "presentation.md" ) {
-        mdFileContent = item.data.toString();
-      } //else if (item.path)
-      // switch (item.path) {
-
-      // }
+      switch (item.path) {
+        case "presentation.md" :
+          mdFileContent = item.data.toString();
+          break;
+        case "style.css" :
+          cssFileContent = item.data.toString();
+          break;
+        case "config.json" :
+          JsonConfigContent = JSON.parse(item.data.toString());
+          break;
+      }
     })
     
     var fixedPathContent = mdFileContent.replaceAll('./assets/', 'atom://' + tempFilePath + '/assets/');
@@ -91,7 +97,7 @@ function createWindow () {
     })
     jenPeutPlusDeLasynchrone.then( () => {
       const fileContentToMd =  md.render(fixedPathContent).split("<hr>");
-      win.webContents.send("file-content", fileContentToMd);
+      win.webContents.send("file-content", { md: fileContentToMd, css: cssFileContent, config: JsonConfigContent});
     });
   });
 

@@ -12,8 +12,9 @@ export default function Presentation() {
     navigate("/");
   }
 
-  const [pageContent, setPageContent] = useState(['empty']);
+  const [pageContent, setPageContent] = useState(['']);
   const [diapo, setDiapo] = useState(0);
+  const [pageCSS, setPageCSS] = useState('');
 
   useEffect(() => {
     OpenFile();
@@ -21,8 +22,14 @@ export default function Presentation() {
 
   const OpenFile = async  () => {
     await window.api.getFileContent( async (data) => {
-      console.log(data);
-      setPageContent(data);
+      // console.log("md" + data.md);
+      // console.log("css" + data.css);
+      // console.log("config" + data.config);
+      var mdContent = data.md;
+      const firstDiapo = "<h1>" + data.config.title + "</h1> <p> Authors : " + data.config.authors.toString() + " </p>";
+      mdContent.unshift(firstDiapo);
+      setPageContent(mdContent);
+      setPageCSS(data.css);
       setDiapo(0);
     });
   }
@@ -42,9 +49,9 @@ export default function Presentation() {
 
   return(
     <div className="page">
-      <div className="diapo">
+      <section className="diapo">
         {parse(pageContent[diapo])}
-      </div>
+      </section>
       <button onClick={toHome} className="goback"> x </button>
       <div className="arrows">
         <button className='arrow' onClick={PreviousDiapo}>{"<"}</button>
@@ -53,6 +60,9 @@ export default function Presentation() {
       <div className="console">
         <textarea /*value={"bonjour je suis du code"}*//>
       </div>
+      <style>
+        {pageCSS}
+      </style>
     </div>
   )
 }
