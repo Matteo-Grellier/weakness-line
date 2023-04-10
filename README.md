@@ -1,6 +1,6 @@
 # Projet desktop
 
-Ce projet consiste à créer logiciel de présentation comme powerpoint avec l'utilisation d'electron.
+Ce projet consiste à créer un logiciel de présentation comme powerpoint avec l'utilisation d'electron.
 
 ## Installation
 
@@ -19,7 +19,7 @@ npm run dev
 
 [MIT](https://choosealicense.com/licenses/mit/)
 
-## Auteur
+## Auteurs
 
 Ce projet a été réalisé par :
 - [Louis Brochard](https://github.com/LBROCHARD)  
