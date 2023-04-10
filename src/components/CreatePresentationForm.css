@@ -1,0 +1,62 @@
+.createPresForm {
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+  background-color: #f7f7f7;
+  border-radius: 5px;
+  margin-top: 20px;
+}
+
+.InputContainer {
+  margin: 10px 0;
+}
+
+.labelTitle {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.chooseButton {
+  display: block;
+  width: 100%;
+  margin-top: 5px;
+  padding: 10px;
+  border: none;
+  background-color: #e2e2e2;
+  border-radius: 5px;
+}
+
+textarea.chooseButton {
+  height: 80px;
+}
+
+button#assets-folder {
+  margin-left: 10px;
+  padding: 10px;
+  border: none;
+  background-color:#1f2937;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button#submit {
+  display: block;
+  margin: 20px auto 0;
+  padding: 10px;
+  border: none;
+  background-color:#1f2937;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+p {
+  margin-top: 10px;
+  font-style: italic;
+}
+
+.areaInput {
+    color: black;
+}

@@ -20,6 +20,12 @@ function createWindow () {
     }
   })
 
+  if (app.isPackaged) {
+    win.loadFile(path.join(__dirname, 'index.html'))
+  } else {
+    win.loadURL('http://localhost:3000');
+  }
+
   const tempFilePath = path.join(app.getPath('temp'), "/weaknessLine").replaceAll('\\', '/');
 
   win.webContents.ipc.on("get-file-content", async () => {
@@ -128,44 +134,50 @@ function createWindow () {
   });
 
   // Récupérer les fichiers et dossiers et les archiver dans un zip que l'utilisateur pourra sauvegarder sur son ordinateur en renommant le .zip en .codeprez
-  ipcMain.on("create-presentation", async (event, { markdownFilePath, cssFilePath }) => {
-      const openDialogResult = await dialog.showSaveDialog(BrowserWindow.getFocusedWindow(), {
-          title: "Save presentation ...",
-          buttonLabel: "Save",
-          filters: [
-              { name: 'codeprez', extensions: ['codeprez'] },
-          ],
-      });
-      
+  ipcMain.on("create-presentation", async (event, { markdownFilePath, cssFilePath, env, title, authors, duration }) => {
+    const openDialogResult = await dialog.showSaveDialog(BrowserWindow.getFocusedWindow(), {
+        title: "Save presentation ...",
+        buttonLabel: "Save",
+        filters: [
+            { name: 'codeprez', extensions: ['codeprez'] },
+        ],
+    });
 
-      const archive = archiver("zip", {
-          zlib: { level: 9 } // Sets the compression level.
-      });
+    const archive = archiver("zip", {
+        zlib: { level: 9 } // Sets the compression level.
+    });
 
-      const output = fs.createWriteStream(openDialogResult.filePath);
-      archive.pipe(output);
+    const output = fs.createWriteStream(openDialogResult.filePath);
+    archive.pipe(output);
 
-      archive.file(markdownFilePath, { name: path.basename(markdownFilePath) });
-      archive.file(cssFilePath, { name: path.basename(cssFilePath) });
+    archive.file(markdownFilePath, { name: path.basename(markdownFilePath) });
+    archive.file(cssFilePath, { name: path.basename(cssFilePath) });
 
-      const files = await readdir(assetsFolderPath);
-      for (const file of files) {
-          const filePath = path.join(assetsFolderPath, file);
-          archive.file(filePath, { name: `assets/${file}` });
-      }
-      
+    // env is an array of path, create a env folder and put all the files in it
+    for (const envFilePath of env) {
+      archive.file(envFilePath, { name: `env/${path.basename(envFilePath)}` });
+    }
 
-      archive.finalize();
+    const files = await readdir(assetsFolderPath);
+    for (const file of files) {
+        const filePath = path.join(assetsFolderPath, file);
+        archive.file(filePath, { name: `assets/${file}` });
+    }
+    
+    archive.append(JSON.stringify({ title, authors, duration }), { name: "config.json" });
+    archive.finalize();
 
-      // rename the file to namefile.codeprez
-      fs.rename(openDialogResult.filePath, openDialogResult.filePath + ".codeprez", (err) => {
-          if (err) {
-              console.log(err);
-          }
-      }
-      );
+    // rename the file to namefile.codeprez
+    // fs.rename(openDialogResult.filePath, openDialogResult.filePath + ".codeprez", (err) => {
+    //     if (err) {
+    //       console.log(err);
+    //     }
+    // });
+    win.loadURL('http://localhost:3000');
   });
-  win.loadURL('http://localhost:3000/%27')
+  
+  
+  win.loadURL('http://localhost:3000')
 }
 
 app.whenReady().then(() => {
@@ -185,7 +197,7 @@ app.whenReady().then(() => {
 })
 
 app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
-        app.quit()
-    }
+  if (process.platform !== 'darwin') {
+    app.quit();
+  }
 })

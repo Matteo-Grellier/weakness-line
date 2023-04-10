@@ -26,7 +26,8 @@ export default function Presentation() {
       // console.log("css" + data.css);
       // console.log("config" + data.config);
       var mdContent = data.md;
-      const firstDiapo = "<h1>" + data.config.title + "</h1> <p> Authors : " + data.config.authors.toString() + " </p>";
+      console.log(data);
+      const firstDiapo = "<h1>" + data.config.title + "</h1> <p> Authors : " + data.config.authors.join(', ') + " </p>";
       mdContent.unshift(firstDiapo);
       setPageContent(mdContent);
       setPageCSS(data.css);
