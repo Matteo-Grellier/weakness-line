@@ -1,6 +1,7 @@
 const { app, BrowserWindow, dialog, protocol } = require('electron')
 const {readdir, readFile, writeFile} = require("fs/promises");
 const path = require('path')
+const md = require('markdown-it')();
 const fs = require('fs'); 
 
 function createWindow () {
@@ -9,8 +10,9 @@ function createWindow () {
     height: 600,
     icon: "./src/logo.ico", 
     webPreferences: {
-      nodeIntegration: true,
-      enableRemoteModule: true,
+      nodeIntegration: false,
+      contextIsolation: true,
+      // enableRemoteModule: true,
       preload: path.join(__dirname, 'preload.js'),
     }
   })
@@ -33,23 +35,42 @@ function createWindow () {
     const files = await decompress(openDialogResult.filePaths[0], tempFilePath);
     // console.log("HERE", tempFilePath);
 
+    var mdFileContent = null;
     files.forEach( (item) => {
       if(item.path == "presentation.md" ) {
-        const content = item.data.toString();
-        win.webContents.send("file-content", [content, tempFilePath]);
+        mdFileContent = item.data.toString();
       }
     })
+    
+    var fixedPathContent = mdFileContent.replaceAll('./assets/', 'atom://' + tempFilePath + '/assets/');
 
-  });
+    const fullMatchRGXP = new RegExp( /\[Code\]\(.*?\)/ , 'gmi');
+    const insideParenthesesRGXP = new RegExp(/(?<=\[Code\]\()(.*?)(?=\))/, 'gmi');
 
-  win.webContents.ipc.on("get-code-file-content", async (filename) => {
-    fs.readFile(tempFilePath + "/assets/" + filename , 'utf8', (err, data) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
-      win.webContents.send("code-file-content", data);
-    });
+    await fixedPathContent.match(fullMatchRGXP).forEach((match) => {
+      const parentesisContent = match.match(insideParenthesesRGXP).toString().split('#');
+
+      const filePath = parentesisContent[0].replace("atom://", "");
+      const fileExt = filePath.split('.')[1];
+      const lines = parentesisContent[1].split("-");
+
+      console.log("filePath = " + filePath);
+      console.log("fileExt = " + fileExt);
+      console.log("lines = " + lines);
+
+      var fileContent = '\`\`\`' + fileExt + "\n";
+      fs.readFile( filePath, (err, data) => {
+        if (err) { 
+          fileContent = null;
+          return;
+        }
+        fileContent += data + '\`\`\` \n';
+        if (fileContent != null) {
+          const fileContentToMd =  md.render(fixedPathContent.replace(match, fileContent)).split("<hr>");
+          win.webContents.send("file-content", fileContentToMd);
+        }
+      });
+    })
   });
 
   win.on('close', function() {
