@@ -36,10 +36,14 @@ function createWindow () {
     // console.log("HERE", tempFilePath);
 
     var mdFileContent = null;
+    var cssFileContent = null;
     files.forEach( (item) => {
       if(item.path == "presentation.md" ) {
         mdFileContent = item.data.toString();
-      }
+      } //else if (item.path)
+      // switch (item.path) {
+
+      // }
     })
     
     var fixedPathContent = mdFileContent.replaceAll('./assets/', 'atom://' + tempFilePath + '/assets/');
