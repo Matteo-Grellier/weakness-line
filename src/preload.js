@@ -25,10 +25,6 @@ contextBridge.exposeInMainWorld("api",{
     //         callback(data.file,data.content);
     //     });
     // }
-    createPresentation : (markdownFilePath, cssFilePath, assetsFolderPath) => {
-        ipcRenderer.send("create-presentation",{markdownFilePath, cssFilePath, assetsFolderPath});
-    },
-
+    createPresentation: (markdownFilePath, cssFilePath) => ipcRenderer.invoke("create-presentation", { markdownFilePath, cssFilePath }),
     openAssetsFolder: () => ipcRenderer.invoke("open-assets-folder"),
-    
 })

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './CreatePresentationForm.css'
 
 export default function CreatePresentation () {
     const [markdownFilePath, setmarkdownFilePath] = useState(null);
@@ -9,7 +10,11 @@ export default function CreatePresentation () {
     const handleSubmit = (event) => {
         event.preventDefault();
         setSubmitClicked(true);
-        window.api.createPresentation(markdownFilePath, cssFilePath);
+        window.api.createPresentation(markdownFilePath, cssFilePath).then((result) => {
+            console.log(result);
+        });
+        
+
     }
 
     const handleAssetsFolderClick = () => {
@@ -19,20 +24,19 @@ export default function CreatePresentation () {
 
     }
   return (
-    <form onSubmit={handleSubmit} >
-      <div>
-        <label htmlFor="markdown-file">Fichier Markdown :</label>
-        <input accept='.md' type="file" id="markdown-file" onChange={(event) => setmarkdownFilePath(event.target.files[0].path)} />
+    <form onSubmit={handleSubmit} className="createPresForm">
+      <div className="markdownFileContainer">
+        <label className='labelTitle' htmlFor="markdown-file">Fichier Markdown :</label>
+        <input className='chooseButton' accept='.md' type="file" id="markdown-file" onChange={(event) => setmarkdownFilePath(event.target.files[0].path)} />
       </div>
-      <div>
-        <label htmlFor="css-file">Fichier CSS :</label>
-        <input accept='.css' type="file" id="css-file" onChange={(event) => setCssFilePath(event.target.files[0].path)} />
+      <div className="cssFileContainer">
+        <label className='labelTitle' htmlFor="css-file">Fichier CSS :</label>
+        <input className='chooseButton' accept='.css' type="file" id="css-file" onChange={(event) => setCssFilePath(event.target.files[0].path)} />
       </div>
-      <div>
-        <label htmlFor="assets-folder">Dossier des assets :</label>
+      <div className="assetsFolderContainer">
+        <label className='labelTitle' htmlFor="assets-folder">Dossier des assets :</label>
         <button type="button" id="assets-folder" onClick={handleAssetsFolderClick}>Choisir un dossier</button>
         <p>{assetsFolderPath}</p>
-
       </div>
       <button id="submit" type="submit">Créer la présentation</button>
       {submitClicked && <p>La présentation a été créée avec succès !</p>}

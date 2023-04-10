@@ -17,6 +17,12 @@ function createWindow() {
             preload: path.join(__dirname, 'preload.js'),
         }
     })
+    if (app.isPackaged) {
+        win.loadFile(path.join(__dirname, 'index.html'))
+    } else {
+        win.loadURL('http://localhost:3000')
+    }
+    
 
     ipcMain.handle("open-assets-folder", async () => {
         const openDialogResult = await dialog.showOpenDialog(BrowserWindow.getFocusedWindow(), {
@@ -33,7 +39,7 @@ function createWindow() {
 
 
     // Récupérer les fichiers et dossiers et les archiver dans un zip que l'utilisateur pourra sauvegarder sur son ordinateur en renommant le .zip en .codeprez
-    ipcMain.on("create-presentation", async (event, { markdownFilePath, cssFilePath }) => {
+    ipcMain.handle("create-presentation", async ({ markdownFilePath, cssFilePath }) => {
         const openDialogResult = await dialog.showSaveDialog(BrowserWindow.getFocusedWindow(), {
             title: "Save presentation ...",
             buttonLabel: "Save",
@@ -69,6 +75,7 @@ function createWindow() {
             }
         }
         );
+        return true;
     });
     win.loadURL('http://localhost:3000/%27')
 }
