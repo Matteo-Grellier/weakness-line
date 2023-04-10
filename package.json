@@ -6,14 +6,15 @@
     "name": "Mattéo Grellier",
     "email": "matteo.grellier@ynov.com"
   },
+  "description": "Un outil de présentation comme powerpoint",
   "contributors": [
     {
       "name": "Louis Brochard",
       "email": "Louis.Brochard@ynov.com"
     },
     {
-      "name": "Adrien Poirier",
-      "email": "Adrien.Poirier@ynov.com"
+      "name": "adrien poirier",
+      "email": "adrien.poirier@ynov.com"
     }
   ],
   "repository": {
@@ -54,7 +55,8 @@
 		"publish": "electron-forge publish",
 		"start:electron": "electron-forge start",
 		"start:react": "react-scripts start",
-		"start:all": "concurrently \"npm run start:react\" \"npm run start:electron\""
+		"start:all": "concurrently \"npm run start:react\" \"npm run start:electron\"",
+        "make:linux": "electron-forge make --platform=\"linux\""
   },
   "eslintConfig": {
     "extends": [

@@ -9,6 +9,7 @@ module.exports = {
 				perMachine: true,
 			}
 		],
+        name: "codeprez",
 	},
 	rebuildConfig: {},
 	makers: [
