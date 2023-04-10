@@ -9,6 +9,12 @@ Installer les dépendances :
 npm install
 ```
 
+## Création du package
+
+```bash
+npm run package
+```
+
 ## Usage
 
 ```bash
