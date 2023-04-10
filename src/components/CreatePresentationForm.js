@@ -9,11 +9,12 @@ export default function CreatePresentation () {
     const [title, setTitle] = useState(null);
     const [authors, setAuthors] = useState([]);
     const [duration, setDuration] = useState(null);
+    const [env, setEnv] = useState([]);
 
     const handleSubmit = (event) => {
         event.preventDefault();
         setSubmitClicked(true);
-        window.api.createPresentation(markdownFilePath, cssFilePath, title, authors, duration);
+        window.api.createPresentation(markdownFilePath, cssFilePath, env, title, authors, duration);
     }
 
     const handleAssetsFolderClick = () => {
@@ -25,27 +26,31 @@ export default function CreatePresentation () {
 
   return (
     <form onSubmit={handleSubmit} className="createPresForm">
-      <div className="markdownFileContainer">
+      <div className="InputContainer">
         <label className='labelTitle' htmlFor="markdown-file">Fichier Markdown :</label>
         <input className='chooseButton' accept='.md' type="file" id="markdown-file" onChange={(event) => setmarkdownFilePath(event.target.files[0].path)} />
       </div>
-      <div className="cssFileContainer">
+      <div className="InputContainer">
         <label className='labelTitle' htmlFor="css-file">Fichier CSS :</label>
         <input className='chooseButton' accept='.css' type="file" id="css-file" onChange={(event) => setCssFilePath(event.target.files[0].path)} />
       </div>
-      <div>
+      <div className="InputContainer">
+        <label className='labelTitle'>Scripts</label>
+        <input onChange={(event) => setEnv([...env, ...Array.from(event.target.files).map(file => file.path)])} className='chooseButton' type='file' multiple></input>
+      </div>
+      <div className="InputContainer">
         <label className='labelTitle'>Titre</label>
         <input onChange={(event => setTitle(event.target.value))} className='chooseButton' type='text'></input>
       </div>
-      <div>
+      <div className="InputContainer">
         <label className='labelTitle'>Auteur</label>
-        <textarea onChange={(event) => setAuthors(event.target.value.split('\n'))} className='chooseButton'></textarea>
+        <textarea onChange={(event) => setAuthors(event.target.value.split('\n'))} className='chooseButton areaInput'></textarea>
       </div>
-      <div>
+      <div className="InputContainer">
         <label className='labelTitle'>Durée</label>
         <input onChange={(event => setDuration(event.target.value))} className='chooseButton' type='text'></input>
       </div>
-      <div className="assetsFolderContainer">
+      <div className="InputContainer">
         <label className='labelTitle' htmlFor="assets-folder">Dossier des assets :</label>
         <button type="button" id="assets-folder" onClick={handleAssetsFolderClick}>Choisir un dossier</button>
         <p>{assetsFolderPath}</p>
