@@ -9,7 +9,10 @@ export default function Home() {
     let path = `/presentation`; 
     navigate(path);
   }
-
+  const toCreatePresentation = () => {
+    let path = '/createPresentation';
+    navigate(path);
+  }
   return (
     <div className="flex flex-col items-center justify-center h-screen">
       <img src="./logo.ico" alt="Logo" className="w-70 h-70" />
@@ -17,7 +20,7 @@ export default function Home() {
         Bienvenue sur WeeknessLine !
       </h1>
       <div className="space-y-4">
-        <button className="homeButton w-full px-10 py-4 rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+        <button onClick={toCreatePresentation} className="homeButton w-full px-10 py-4 rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
           Créer une présentation
         </button>
         <button onClick={toPresentation} className="homeButton w-full px-10 py-4 rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">

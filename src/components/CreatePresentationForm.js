@@ -1,53 +1,41 @@
 import React, { useState } from 'react';
 
-const CreatePresentationForm = () => {
-  const [markdownFile, setMarkdownFile] = useState(null);
-  const [cssFile, setCssFile] = useState(null);
-  const [title, setTitle] = useState('');
-  const [presenters, setPresenters] = useState('');
-  const [duration, setDuration] = useState('');
-  const [assetsFolder, setAssetsFolder] = useState(null);
-  const [envFolder, setEnvFolder] = useState(null);
+export default function CreatePresentation () {
+    const [markdownFilePath, setmarkdownFilePath] = useState(null);
+    const [cssFilePath, setCssFilePath] = useState(null);
+    const [assetsFolderPath, setAssetsFolderPath] = useState(null);
+    const [submitClicked, setSubmitClicked] = useState(false);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // créer l'archive .codeprez
-  }
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        setSubmitClicked(true);
+        window.api.createPresentation(markdownFilePath, cssFilePath);
+    }
 
+    const handleAssetsFolderClick = () => {
+        window.api.openAssetsFolder().then((assetsFolderPath) => {
+            setAssetsFolderPath(assetsFolderPath);
+        });
+
+    }
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} >
       <div>
         <label htmlFor="markdown-file">Fichier Markdown :</label>
-        <input type="file" id="markdown-file" onChange={(event) => setMarkdownFile(event.target.files[0])} />
+        <input accept='.md' type="file" id="markdown-file" onChange={(event) => setmarkdownFilePath(event.target.files[0].path)} />
       </div>
       <div>
         <label htmlFor="css-file">Fichier CSS :</label>
-        <input type="file" id="css-file" onChange={(event) => setCssFile(event.target.files[0])} />
-      </div>
-      <div>
-        <label htmlFor="title">Titre :</label>
-        <input type="text" id="title" value={title} onChange={(event) => setTitle(event.target.value)} />
-      </div>
-      <div>
-        <label htmlFor="presenters">Présentateurs :</label>
-        <input type="text" id="presenters" value={presenters} onChange={(event) => setPresenters(event.target.value)} />
-      </div>
-      <div>
-        <label htmlFor="duration">Durée estimée :</label>
-        <input type="text" id="duration" value={duration} onChange={(event) => setDuration(event.target.value)} />
+        <input accept='.css' type="file" id="css-file" onChange={(event) => setCssFilePath(event.target.files[0].path)} />
       </div>
       <div>
         <label htmlFor="assets-folder">Dossier des assets :</label>
-        <input type="file" id="assets-folder" webkitdirectory="" onChange={(event) => setAssetsFolder(event.target.files[0])} />
+        <button type="button" id="assets-folder" onClick={handleAssetsFolderClick}>Choisir un dossier</button>
+        <p>{assetsFolderPath}</p>
+
       </div>
-      <div>
-        <label htmlFor="env-folder">Dossier de l'environnement :</label>
-        <input type="file" id="env-folder" webkitdirectory="" onChange={(event) => setEnvFolder(event.target.files[0])} />
-      </div>
-      <button type="submit">Créer la présentation</button>
+      <button id="submit" type="submit">Créer la présentation</button>
+      {submitClicked && <p>La présentation a été créée avec succès !</p>}
     </form>
   );
 }
-
-export default CreatePresentationForm
-
