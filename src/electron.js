@@ -47,30 +47,45 @@ function createWindow () {
     const fullMatchRGXP = new RegExp( /\[Code\]\(.*?\)/ , 'gmi');
     const insideParenthesesRGXP = new RegExp(/(?<=\[Code\]\()(.*?)(?=\))/, 'gmi');
 
-    await fixedPathContent.match(fullMatchRGXP).forEach((match) => {
-      const parentesisContent = match.match(insideParenthesesRGXP).toString().split('#');
+    var jenPeutPlusDeLasynchrone = new Promise(  (resolve, reject) => {
 
-      const filePath = parentesisContent[0].replace("atom://", "");
-      const fileExt = filePath.split('.')[1];
-      const lines = parentesisContent[1].split("-");
+      fixedPathContent.match(fullMatchRGXP).forEach( (match, index) => {
+        const parentesisContent = match.match(insideParenthesesRGXP).toString().split('#');
 
-      console.log("filePath = " + filePath);
-      console.log("fileExt = " + fileExt);
-      console.log("lines = " + lines);
+        const filePath = parentesisContent[0].replace("atom://", "");
+        const fileExt = filePath.split('.')[1];
+        const lines = parentesisContent[1].split("-");
 
-      var fileContent = '\`\`\`' + fileExt + "\n";
-      fs.readFile( filePath, (err, data) => {
-        if (err) { 
-          fileContent = null;
-          return;
-        }
-        fileContent += data + '\`\`\` \n';
-        if (fileContent != null) {
-          const fileContentToMd =  md.render(fixedPathContent.replace(match, fileContent)).split("<hr>");
-          win.webContents.send("file-content", fileContentToMd);
-        }
-      });
+        console.log("filePath = " + filePath);
+        console.log("fileExt = " + fileExt);
+        console.log("lines = " + lines);
+
+        var fileContent = '\`\`\`' + fileExt + "\n";
+        fs.readFile( filePath, (err, data) => {
+          if (err) { 
+            fileContent = null;
+            return;
+          }
+          var selectedLinesOfFile ="";
+          data.toString().split("\n").forEach( (match, index) => {
+            if( index >= lines[0] - 1  && index <= lines[1] - 1) {
+              selectedLinesOfFile += match + "\n";
+            }
+          });
+          fileContent += selectedLinesOfFile + '\`\`\` \n';
+          if (fileContent != null) {
+            fixedPathContent = fixedPathContent.replace(match, fileContent);
+            // const fileContentToMd =  md.render(fixedPathContent).split("<hr>");
+            // win.webContents.send("file-content", fileContentToMd);
+            resolve();
+          }
+        });
+      })
     })
+    jenPeutPlusDeLasynchrone.then( () => {
+      const fileContentToMd =  md.render(fixedPathContent).split("<hr>");
+      win.webContents.send("file-content", fileContentToMd);
+    });
   });
 
   win.on('close', function() {
