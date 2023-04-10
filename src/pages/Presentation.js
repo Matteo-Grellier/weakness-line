@@ -2,73 +2,68 @@ import './Presentation.css'
 import { useState, useEffect } from "react";
 import ReactDOM from "react-dom/client";
 import { useNavigate } from "react-router-dom";
-
-// const { dialog } = require('electron')
-var md = require('markdown-it')();
 const parse = require('html-react-parser');
 
-// var result = md.render('# markdown-it rulezz! \n --- \n bob ! \n ```cs  yay ```');
 
 export default function Presentation() {
 
-  let navigate = useNavigate(); 
-  const toHome = () =>{ 
-    let path = `/`; 
-    navigate(path);
+  const navigate = useNavigate(); 
+  const toHome = () =>{
+    navigate("/");
   }
 
-  const [pageContent, setPageContent] = useState(['empty']);
+  const [pageContent, setPageContent] = useState(['']);
   const [diapo, setDiapo] = useState(0);
+  const [pageCSS, setPageCSS] = useState('');
 
   useEffect(() => {
     OpenFile();
   }, []);
 
   const OpenFile = async  () => {
-    await window.api.getFileContent((content) => {
-      // textarea.value = content;
-      setPageContent(content.split("---"));
+    await window.api.getFileContent( async (data) => {
+      // console.log("md" + data.md);
+      // console.log("css" + data.css);
+      // console.log("config" + data.config);
+      var mdContent = data.md;
+      console.log(data);
+      const firstDiapo = "<h1>" + data.config.title + "</h1> <p> Authors : " + data.config.authors.join(', ') + " </p>";
+      mdContent.unshift(firstDiapo);
+      setPageContent(mdContent);
+      setPageCSS(data.css);
       setDiapo(0);
     });
   }
 
   const NextDiapo = () => {
-    console.log(diapo+1);
-    console.log(pageContent.length);
     if(diapo+1 <= pageContent.length - 1) {
       setDiapo(diapo+1);
-    } else {
-      console.log("nop");
     }
   }
 
   const PreviousDiapo = () => {
-    console.log(diapo-1);
     if(diapo-1 >= 0) {
       setDiapo(diapo-1);
-    } else {
-      console.log("nop");
     }
   }
 
 
   return(
     <div className="page">
-      <button className="yesman" onClick={OpenFile}>yesman</button>
-      <div className="diapo">
-        {/* <h1>Pressentation zone</h1>
-        <p>Pressentation zone</p>
-        <p>Pressentation zone</p> */}
-        {parse(md.render(pageContent[diapo]))}
-      </div>
+      <section className="diapo">
+        {parse(pageContent[diapo])}
+      </section>
       <button onClick={toHome} className="goback"> x </button>
       <div className="arrows">
         <button className='arrow' onClick={PreviousDiapo}>{"<"}</button>
         <button className='arrow' onClick={NextDiapo}>{">"}</button>
       </div>
       <div className="console">
-        <textarea /*value={"blaa alalzd jagd gazgd gaz"*//>
+        <textarea /*value={"bonjour je suis du code"}*//>
       </div>
+      <style>
+        {pageCSS}
+      </style>
     </div>
   )
 }

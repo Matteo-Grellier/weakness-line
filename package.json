@@ -11,10 +11,6 @@
     {
       "name": "Louis Brochard",
       "email": "Louis.Brochard@ynov.com"
-    },
-    {
-      "name": "adrien poirier",
-      "email": "adrien.poirier@ynov.com"
     }
   ],
   "repository": {
@@ -33,6 +29,7 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "cross-env": "^7.0.3",
     "archiver": "^5.3.1",
     "concurrently": "^7.6.0",
     "decompress": "^4.2.1",
@@ -42,10 +39,11 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
-    "wait-on": "^7.0.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+    "dev": "concurrently -k \"cross-env BROWSER=none npm start\" \"npm:electron\"",
+    "electron": "wait-on http://127.0.0.1:3000 && electron .",
     "start": "react-scripts start",
 		"build": "react-scripts build",
 		"test": "react-scripts test",
@@ -56,7 +54,7 @@
 		"start:electron": "electron-forge start",
 		"start:react": "react-scripts start",
 		"start:all": "concurrently \"npm run start:react\" \"npm run start:electron\"",
-        "make:linux": "electron-forge make --platform=\"linux\""
+    "make:linux": "electron-forge make --platform=\"linux\""
   },
   "eslintConfig": {
     "extends": [
@@ -77,6 +75,10 @@
     ]
   },
   "devDependencies": {
+    "concurrently": "^8.0.1",
+    "react-router-dom": "^6.8.1",
+    "tailwindcss": "^3.2.7",
+    "wait-on": "^7.0.1",
     "@electron-forge/cli": "^6.1.1",
     "@electron-forge/maker-deb": "^6.1.1",
     "@electron-forge/maker-rpm": "^6.1.1",

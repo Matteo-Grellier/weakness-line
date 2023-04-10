@@ -1,3 +1,8 @@
+html, body {
+    padding: 0;
+    margin: 0;
+}
+
 .console {
     background-color: #464646;
     position: absolute;
@@ -10,6 +15,11 @@
     justify-content: center;
 }
 
+.page {
+    width: 100%;
+    height: 100%;
+}
+
 textarea {
     background-color: #464646;
     color: white;
@@ -18,11 +28,20 @@ textarea {
     scroll-behavior: auto;
 }
 
-.diapo{
+.diapoBackground {
+    background-color: #464646;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
+}
+
+.diapo{
+    /* display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; */
+    height: 90%;
+    width: 90%;
 }
 
 .goback {
@@ -57,14 +76,16 @@ textarea {
     padding: 20px;
 }
 
-h1 {
+/* h1 {
     font-size: 30px;
     font-weight: bold;
 }
 
-code {
+pre {
     color: white;
     background-color: #464646;
     padding: 20px;
     border-radius: 5px;
-}
+    max-height: 100%;
+    scroll-behavior: auto;
+} */
