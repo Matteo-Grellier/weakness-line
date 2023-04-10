@@ -39,7 +39,7 @@ function createWindow() {
 
 
     // Récupérer les fichiers et dossiers et les archiver dans un zip que l'utilisateur pourra sauvegarder sur son ordinateur en renommant le .zip en .codeprez
-    ipcMain.handle("create-presentation", async ({ markdownFilePath, cssFilePath }) => {
+    ipcMain.on("create-presentation", async (event, { markdownFilePath, cssFilePath, title, author, duration }) => {
         const openDialogResult = await dialog.showSaveDialog(BrowserWindow.getFocusedWindow(), {
             title: "Save presentation ...",
             buttonLabel: "Save",
@@ -64,8 +64,9 @@ function createWindow() {
             const filePath = path.join(assetsFolderPath, file);
             archive.file(filePath, { name: `assets/${file}` });
         }
-        
 
+        // add title, author that is an array of strings and duration to config.json in the zip
+        archive.append(JSON.stringify({ title, author, duration }), { name: "config.json" });
         archive.finalize();
 
         // rename the file to namefile.codeprez
@@ -75,7 +76,6 @@ function createWindow() {
             }
         }
         );
-        return true;
     });
     win.loadURL('http://localhost:3000/%27')
 }
