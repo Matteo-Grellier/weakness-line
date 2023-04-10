@@ -22,7 +22,7 @@ npm run dev
 ## Auteur
 
 Ce projet a été réalisé par :
-- [Louis Brocahrd](https://github.com/LBROCHARD)  
+- [Louis Brochard](https://github.com/LBROCHARD)  
 - [Mattéo Grellier](https://github.com/Matteo-Grellier)  
 - [Adrien Poirier](https://github.com/oui-connect-adrien)  
 
