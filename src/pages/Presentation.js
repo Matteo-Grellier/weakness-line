@@ -30,21 +30,18 @@ export default function Presentation() {
       setPageContent(mdContent);
       setPageCSS(data.css);
       setDiapo(0);
-      hljs.highlightAll();
     });
   }
 
   const NextDiapo = () => {
     if(diapo+1 <= pageContent.length - 1) {
       setDiapo(diapo+1);
-      hljs.highlightAll();
     }
   }
 
   const PreviousDiapo = () => {
     if(diapo-1 >= 0) {
       setDiapo(diapo-1);
-      hljs.highlightAll();
     }
   }
 
