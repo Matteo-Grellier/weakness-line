@@ -24,11 +24,7 @@ export default function Presentation() {
 
   const OpenFile = async  () => {
     await window.api.getFileContent( async (data) => {
-      // console.log("md" + data.md);
-      // console.log("css" + data.css);
-      // console.log("config" + data.config);
       var mdContent = data.md;
-      console.log(data);
       const firstDiapo = "<h1>" + data.config.title + "</h1> <p> Authors : " + data.config.authors.join(', ') + " </p>";
       mdContent.unshift(firstDiapo);
       setPageContent(mdContent);
