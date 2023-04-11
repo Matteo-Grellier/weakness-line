@@ -79,13 +79,19 @@ textarea {
 /* h1 {
     font-size: 30px;
     font-weight: bold;
-}
+} */
 
 pre {
-    color: white;
+    /* color: white;
     background-color: #464646;
     padding: 20px;
     border-radius: 5px;
     max-height: 100%;
-    scroll-behavior: auto;
-} */
+    scroll-behavior: auto; */
+    max-height: 200px;
+    overflow: hidden !important;
+}
+
+code {
+    overflow: auto;
+}

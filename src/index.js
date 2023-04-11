@@ -6,6 +6,7 @@ import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Presentation from "./pages/Presentation";
 import CreatePres from "./pages/CreatePresentation";
+import "highlight.js/styles/github.css";
 
 function App() {
     return (

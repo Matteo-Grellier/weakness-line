@@ -1,14 +1,16 @@
 import './Presentation.css'
-import { useState, useEffect } from "react";
+import { React, useState, useEffect, componentDidMount } from "react";
 import ReactDOM from "react-dom/client";
 import { useNavigate } from "react-router-dom";
+import hljs from "highlight.js";
+import "highlight.js/styles/github.css";
 const parse = require('html-react-parser');
-
 
 export default function Presentation() {
 
   const navigate = useNavigate(); 
   const toHome = () =>{
+    window.api.Unfullscreen();
     navigate("/");
   }
 
@@ -32,18 +34,21 @@ export default function Presentation() {
       setPageContent(mdContent);
       setPageCSS(data.css);
       setDiapo(0);
+      hljs.highlightAll();
     });
   }
 
   const NextDiapo = () => {
     if(diapo+1 <= pageContent.length - 1) {
       setDiapo(diapo+1);
+      hljs.highlightAll();
     }
   }
 
   const PreviousDiapo = () => {
     if(diapo-1 >= 0) {
       setDiapo(diapo-1);
+      hljs.highlightAll();
     }
   }
 

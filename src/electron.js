@@ -1,6 +1,7 @@
 const { app, BrowserWindow, dialog, protocol, ipcMain } = require('electron')
 const {readdir, readFile, writeFile} = require("fs/promises");
 const path = require('path')
+const electron = require('electron')
 const md = require('markdown-it')();
 const archiver = require('archiver');
 const fs = require('fs'); 
@@ -15,7 +16,7 @@ function createWindow () {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      // enableRemoteModule: true,
+      enableRemoteModule: true,
       preload: path.join(__dirname, 'preload.js'),
     }
   })
@@ -29,6 +30,8 @@ function createWindow () {
   const tempFilePath = path.join(app.getPath('temp'), "/weaknessLine").replaceAll('\\', '/');
 
   win.webContents.ipc.on("get-file-content", async () => {
+    win.setFullScreen(true);
+
     const openDialogResult = await dialog.showOpenDialog(BrowserWindow.getFocusedWindow(), {
       title : "Open file ...",
       buttonLabel : "Open",
@@ -42,7 +45,6 @@ function createWindow () {
 
     const decompress = require('decompress');
     const files = await decompress(openDialogResult.filePaths[0], tempFilePath);
-    // console.log("HERE", tempFilePath);
 
     var mdFileContent = null;
     var cssFileContent = null;
@@ -94,8 +96,6 @@ function createWindow () {
           fileContent += selectedLinesOfFile + '\`\`\` \n';
           if (fileContent != null) {
             fixedPathContent = fixedPathContent.replace(match, fileContent);
-            // const fileContentToMd =  md.render(fixedPathContent).split("<hr>");
-            // win.webContents.send("file-content", fileContentToMd);
             resolve();
           }
         });
@@ -105,6 +105,10 @@ function createWindow () {
       const fileContentToMd =  md.render(fixedPathContent).split("<hr>");
       win.webContents.send("file-content", { md: fileContentToMd, css: cssFileContent, config: JsonConfigContent});
     });
+  });
+
+  win.webContents.ipc.on("unfullscreen", async () => { 
+    win.setFullScreen(false);
   });
 
   win.on('close', function() {
@@ -166,18 +170,8 @@ function createWindow () {
     
     archive.append(JSON.stringify({ title, authors, duration }), { name: "config.json" });
     archive.finalize();
-
-    // rename the file to namefile.codeprez
-    // fs.rename(openDialogResult.filePath, openDialogResult.filePath + ".codeprez", (err) => {
-    //     if (err) {
-    //       console.log(err);
-    //     }
-    // });
     win.loadURL('http://localhost:3000');
   });
-  
-  
-  win.loadURL('http://localhost:3000')
 }
 
 app.whenReady().then(() => {
