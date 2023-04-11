@@ -1,7 +1,6 @@
-const { app, BrowserWindow, dialog, protocol, ipcMain } = require('electron')
+const { app, BrowserWindow, dialog, protocol, ipcMain, Menu  } = require('electron')
 const {readdir, readFile, writeFile} = require("fs/promises");
 const path = require('path')
-const electron = require('electron')
 const md = require('markdown-it')();
 const archiver = require('archiver');
 const fs = require('fs'); 
@@ -20,6 +19,35 @@ function createWindow () {
       preload: path.join(__dirname, 'preload.js'),
     }
   })
+
+  const menu = Menu.buildFromTemplate([
+    {
+      label: "Go Back Home",
+      accelerator: "Ctrl+H",
+      click: () => {
+        win.loadURL('http://localhost:3000/#/');
+        win.setFullScreen(false);
+      }
+    },
+    { 
+      label: "Create Codeprez File",
+      accelerator: "Ctrl+F",
+      click: () => {
+        win.loadURL('http://localhost:3000/#/createPresentation');
+        win.setFullScreen(false);
+      }
+    },
+    { 
+      label: "Open Codeprez File",
+      accelerator: "Ctrl+O",
+      click: () => {
+        win.loadURL('http://localhost:3000/#/presentation');
+        win.setFullScreen(true);
+      }
+    }
+  ]);
+
+  Menu.setApplicationMenu(menu);
 
   if (app.isPackaged) {
     win.loadFile(path.join(__dirname, 'index.html'))
